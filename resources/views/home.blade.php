@@ -18,10 +18,10 @@
                     <hr>
                     <ul id="sortable" class="list-group todolist-list">
                         @foreach($tasks as $task)
-                            <li class="list-group-item">
+                            <li class="list-group-item task-list-item">
                                 <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" value="" /> {{ $task->name }}</label> <br><font color="grey"> </font>
+                                    <label class="task-label" task-id="{{ $task->id }}">
+                                        <input type="checkbox" class="task-checkbox" task-id="{{ $task->id }}" value="" /> {{ $task->name }}</label> <br><font color="grey"> </font>
                                 </div>
                             </li>
                         @endforeach
@@ -35,7 +35,7 @@
                         
                     </ul>
                     <hr>
-                    <button id="checkAll" class="btn">
+                    <button id="complete-checked" class="btn">
                         Complete Checked
                     </button>
                     <br>
@@ -50,8 +50,9 @@
                 <div class="todolist">
                     <h1>Already Done</h1>
                     <ul id="done-items" class="list-unstyled">
-                        <li>Some item</li>
-                        
+                        @foreach($completedTasks as $completedTask)
+                            <li>{{ $completedTask->name }}</li>
+                        @endforeach
                     </ul>
                     
                     <div class="text-center">
@@ -128,7 +129,7 @@
      var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
      function addTask() {
-         alert("hi?");
+         console.log("start: addTask");
          let taskName = $('#add-task-input').val();
          let userId   = {{ Session::get('userId') }};
          let taskListId = {{ Session::get('taskListId')  }};
@@ -137,9 +138,8 @@
                                  "authorId" : userId,
                                  "taskListId" : taskListId},
                 function(result){
-                    alert(result);
-                    alert("create task success! " + name);
-                    alert("{{ Session::get('username') }}");
+                    console.log(result);
+                    console.log("create task success! " + name);
                 }).fail(function(xhr, textStatus, errorThrown) {
                     console.log(xhr);
                     console.log(" | " + textStatus + " | " + errorThrown);
@@ -147,8 +147,41 @@
          alert("addTask function ended");
          
      }
+     var taskLabels = document.getElementsByClassName("task-label");
+     var taskCheckboxes = document.getElementsByClassName("task-checkbox");
+     function completeChecked()
+     {
+         //task-list-item
+         console.log("start: completeChecked");
+         let taskLabels = document.getElementsByClassName("task-label");
+         let taskCheckboxes = document.getElementsByClassName("task-checkbox");
+         let taskCount = {{ $tasks->count() ?: 0 }};
+         for (let i = 0; i < taskCount; i++) {
+             let label = taskLabels[i];
+             let taskId = label.getAttribute("task-id");
+             // Must have same task-id and be of the class task-checkbox
+             let checkbox = document.querySelectorAll('[task-id="'+taskId+'"].task-checkbox')[0];
+
+             if(checkbox.checked){
+                 console.log("Checkbox is checked");
+                 console.log(checkbox);
+                 $.post("/completeTask", { _token : CSRF_TOKEN,
+                                           "taskId" : taskId},
+                        function(result){
+                            console.log("Complete task worked");
+                        }).fail(function(xhr, textStatus, errorThrown) {
+                            console.log(xhr);
+                            console.log(" | " + textStatus + " | " + errorThrown);
+                        });
+                 
+             }
+         }
+         alert("complete function ended");
+         
+     }
      $(document).ready(function(){
          $("#add-task-button").click(addTask);
+         $("#complete-checked").click(completeChecked);
      });
     </script>
 @endsection

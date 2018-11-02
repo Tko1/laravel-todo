@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -25,5 +26,18 @@ class TaskController extends Controller
         $task->save();
 
         return ['response' => 'success'];
+    }
+    public function complete(Request $request)
+    {
+        $this->validate($request, [
+            'taskId' => 'required'
+        ]);
+        $taskId = $request->taskId;
+        DB::table('tasks')
+          ->where('id', $taskId)
+          ->update(['completed' => true]);
+
+        return ['response' => 'success'];
+        
     }
 }

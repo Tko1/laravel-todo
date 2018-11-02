@@ -17,13 +17,20 @@ use Illuminate\Http\Request;
 Route::get('/', function (Request $request) {
     $userId = $request->session()->get('userId');
     $taskListId = $request->session()->get('taskListId');
+    //TODO get tasks one time,  then pull out completed?
     $tasks = Task::where('authorId', '=', $userId)
                  ->where('parentTaskListId', '=', $taskListId)
+                 ->where('completed', '=', false)
                  ->orderBy('created_at', 'asc')->get();
-
+    
+    $completedTasks = Task::where('authorId', '=', $userId)
+                          ->where('parentTaskListId', '=', $taskListId)
+                          ->where('completed', '=', true)
+                          ->orderBy('created_at', 'asc')->get();
     $profiles = Profile::all()->pluck('name')->toArray();
     return view('home', [
         'tasks' => $tasks,
+        'completedTasks' => $completedTasks,
         'profiles' => $profiles
     ]);
 });
@@ -62,6 +69,7 @@ Route::post('/createProfile',function (Request $request) {
 });
 
 Route::post('/createTask', 'TaskController@store');
+Route::post('/completeTask', 'TaskController@complete');
 Route::post('/login',function (Request $request) {
     $validator = Validator::make($request->all(), [
         'name' => 'required|max:255'
