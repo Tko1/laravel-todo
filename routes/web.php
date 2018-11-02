@@ -16,13 +16,15 @@ use Illuminate\Http\Request;
 
 Route::get('/', function (Request $request) {
     $userId = $request->session()->get('userId');
-    
     $taskListId = $request->session()->get('taskListId');
     $tasks = Task::where('authorId', '=', $userId)
                  ->where('parentTaskListId', '=', $taskListId)
                  ->orderBy('created_at', 'asc')->get();
+
+    $profiles = Profile::all()->pluck('name')->toArray();
     return view('home', [
-        'tasks' => $tasks
+        'tasks' => $tasks,
+        'profiles' => $profiles
     ]);
 });
 

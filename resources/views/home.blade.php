@@ -36,7 +36,7 @@
                     </ul>
                     <hr>
                     <button id="checkAll" class="btn">
-                        Completed
+                        Complete Checked
                     </button>
                     <br>
                     <div class="todo-footer">
@@ -64,13 +64,17 @@
                         <span style="float: left;">
                             <img src="/images/defaultProfile.jpg" height="100" width="100">
                         </span>
-                        <span> <h3> Cameron </h3></span>
+                        <span> <h3> {{ Session::get('username') ?: "No profile loaded" }} </h3></span>
                     </div>
                     <hr>
                     <p> User profiles: </p>
+                    
                     <ul class="list-group">
-                        <li class="list-group-item">Cameron</li>
-                        <li class="list-group-item">Ron</li>
+                        @foreach($profiles as $profile)
+                            <li class="list-group-item">
+                                {{$profile}}
+                            </li>
+                        @endforeach
                     </ul>
                     <hr class="my-4">
                     <div class="text-center">
