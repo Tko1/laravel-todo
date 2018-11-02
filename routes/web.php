@@ -16,33 +16,14 @@ use Illuminate\Http\Request;
 
 Route::get('/', function (Request $request) {
     $userId = $request->session()->get('userId');
+    
+    $taskListId = $request->session()->get('taskListId');
     $tasks = Task::where('authorId', '=', $userId)
+                 ->where('parentTaskListId', '=', $taskListId)
                  ->orderBy('created_at', 'asc')->get();
     return view('home', [
         'tasks' => $tasks
     ]);
-});
-
-Route::post('/task', function (Request $request) {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|max:255',
-        'authorId' => 'required|integer'
-    ]);
-
-    if ($validator->fails()) {
-        return redirect('/')
-            ->withInput()
-            ->withErrors($validator);
-    }
-
-    // Create The Task...
-    // :) So this is the ORM 
-    $task = new Task;
-    $task->name = $request->name;
-    $task->authorId = $request->authorId;
-    $task->save();
-
-    return redirect('/');
 });
 
 Route::delete('/task/{id}', function($id){
@@ -138,6 +119,7 @@ Route::post('/login',function (Request $request) {
         $request->session()->put('userId',$loginId);
         //Load this task list as the active taskList of this session
         $request->session()->put('taskListId',$taskListId);
+        //Change task list name
     }
     return $response;
 });
