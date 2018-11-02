@@ -59,7 +59,7 @@
                     </div>
                     
                 </div>
-                <div class="jumbotron user-account-box">
+                <div class="jumbotron user-profile-box">
                     <div style="position: relative;">
                         <span style="float: left;">
                             <img src="/images/defaultProfile.jpg" height="100" width="100">
@@ -69,7 +69,7 @@
                     <hr>
                     <p> User profiles: </p>
                     
-                    <ul class="list-group">
+                    <ul class="list-group user-profile-list">
                         @foreach($profiles as $profile)
                             <li class="list-group-item">
                                 {{$profile}}
