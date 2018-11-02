@@ -52,11 +52,33 @@
                 <div class="todolist">
                     <h1>Already Done</h1>
                     <ul id="done-items" class="list-unstyled">
-                        <li>Some item <button class="remove-item btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-remove"></span></button></li>
+                        <li>Some item</li>
                         
                     </ul>
+                    
+                    <div class="text-center">
+                        <button href="" class="btn" data-toggle="modal" data-target="#modalLoginForm">Login</button>
+                    </div>
+                    
                 </div>
-            </div>
+                <div class="jumbotron user-account-box">
+                    <div style="position: relative;">
+                        <span style="float: left;">
+                            <img src="/images/defaultProfile.jpg" height="100" width="100">
+                        </span>
+                        <span> <h3> Cameron </h3></span>
+                    </div>
+                    <hr>
+                    <p> User profiles: </p>
+                    <ul class="list-group">
+                        <li class="list-group-item">Cameron</li>
+                        <li class="list-group-item">Ron</li>
+                    </ul>
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <button href="" class="btn" data-toggle="modal" data-target="#modalLoginForm">Add profile</button>
+                    </div>
+                </div>
         </div>
     </div>
 @endsection
@@ -91,11 +113,11 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-default btn-number circle" data-type="plus" data-field="quant[1]">
-                        <i class='fa fa-plus'></i>
-                    </button>
-                </span>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default btn-number circle" data-type="plus" data-field="quant[1]">
+                            <i class='fa fa-plus'></i>
+                        </button>
+                    </span>
                 </li>
             </ul>
         </div>
