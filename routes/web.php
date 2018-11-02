@@ -59,29 +59,7 @@ Route::post('/createProfile',function (Request $request) {
     return [ 'response' => 'success', 'username' => $profile->name, 'userId' => $profile->id];
 });
 
-Route::post('/createTask',function (Request $request) {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|max:255',
-        'authorId' => 'required'
-    ]);
-
-    if ($validator->fails()) {
-        return redirect('/')
-            ->withInput()
-            ->withErrors($validator);
-    }
-
-    // Create The Task...
-    // :) So this is the ORM 
-    $task = new Task();
-    $task->name = $request->name;
-    $task->authorId = $request->authorId;
-    $task->description = "";
-    $task->parentTaskListId = $request->taskListId;
-    $task->save();
-
-    return redirect('/');
-});
+Route::post('/createTask', 'TaskController@store');
 Route::post('/login',function (Request $request) {
     $validator = Validator::make($request->all(), [
         'name' => 'required|max:255'
