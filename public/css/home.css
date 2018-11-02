@@ -40,7 +40,7 @@ li.ui-state-default:last-child{
 #done-items li:last-child{
     border-bottom:none;
 }
-#checkAll{
+#add-task-button{
   margin-top:10px;
 }
 

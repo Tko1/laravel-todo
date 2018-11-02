@@ -3,38 +3,36 @@
 <!--Built on top of the sample here https://bootsnipp.com/snippets/featured/todo-example  -->
 @section('head')
     {{ Html::style('css/home.css') }}
+    
 @endsection
 
 @section('content')
-    <!------ Include the above in your HEAD tag ---------->
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <div class="todolist not-done">
                     <h1>My Day</h1>
-                    <input type="text" class="form-control add-todo" placeholder="Add task">
-                    <button id="checkAll" class="btn">Submit</button>
+                    <input type="text" id="add-task-input" class="form-control add-todo" placeholder="Add task">
+                    <button id="add-task-button" class="btn">Submit</button>
                     
                     <hr>
                     <ul id="sortable" class="list-group todolist-list">
+                        @foreach($tasks as $task)
+                            <li class="list-group-item">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" /> {{ $task->name }}</label> <br><font color="grey"> </font>
+                                </div>
+                            </li>
+                        @endforeach
+                        <!-- Example todo -->
                         <li class="list-group-item">
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" value="" /> Take out the trash</label> <br><font color="grey"> Go to dumpster, place trash inside dumpster, do dance, shout 'yatta' from the skies, I dunno, I'm just trying to make a large description and I don't speak Lorem Ipsem. </font><i class='fa fa-plus'></i>
                             </div>
                         </li>
-                        <li class="list-group-item" >
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" value="" />Buy bread</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" value="" />Teach penguins to fly</label>
-                            </div>
-                        </li>
+                        
                     </ul>
                     <hr>
                     <button id="checkAll" class="btn">
@@ -79,8 +77,8 @@
                         <button href="" class="btn" data-toggle="modal" data-target="#modalLoginForm">Add profile</button>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
 @endsection
 
 
@@ -122,4 +120,31 @@
             </ul>
         </div>
     </nav>
+    <script>
+     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+     function addTask() {
+         alert("hi?");
+         let taskName = $('#add-task-input').val();
+         let userId   = {{ Session::get('userId') }};
+         let taskListId = {{ Session::get('taskListId')  }};
+         $.post("/createTask", { _token : CSRF_TOKEN,
+                                 "name" : taskName,
+                                 "authorId" : userId,
+                                 "taskListId" : taskListId},
+                function(result){
+                    alert(result);
+                    alert("create task success! " + name);
+                    alert("{{ Session::get('username') }}");
+                }).fail(function(xhr, textStatus, errorThrown) {
+                    console.log(xhr);
+                    console.log(" | " + textStatus + " | " + errorThrown);
+                });
+         alert("addTask function ended");
+         
+     }
+     $(document).ready(function(){
+         $("#add-task-button").click(addTask);
+     });
+    </script>
 @endsection
