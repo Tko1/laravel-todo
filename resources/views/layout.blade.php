@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
 
         <title>Todo list</title>
 
@@ -20,10 +21,11 @@
         @yield('head')
         <!-- ------------------------------------------- -->
     </head>
-    <header>
-        @yield('header')
-    </header>
     <body>
+        <header>
+            {{Session::get('username')}}
+            @yield('header')
+        </header>
         <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -33,20 +35,53 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body mx-3">
-                        <div class="md-form mb-5">
-                            <input type="email" id="defaultForm-email" class="form-control validate" placeholder="Username">
+                    <form>
+                        <div class="modal-body mx-3">
+                            <div class="md-form mb-5">
+                                
+                                <input type="username" id="username-input" class="form-control validate" placeholder="Username">
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button class="btn btn-default">Login</button>
-                    </div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="submit" class="btn btn-default" id="testButton">
+                                Add / Load Profile
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+
         @yield('content')
+        <script> 
+         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+         function addProfile() {
+             let name = $('#username-input').val();
+             $.post("/createProfile", { _token : CSRF_TOKEN,
+                                        "name" : name},
+                    function(result){
+                        alert(result);
+                        alert("create profile success! " + name);
+                        alert("{{ Session::get('username') }}");
+                    });
+             $.post("/login", { _token : CSRF_TOKEN,
+                                "name" : name},
+                    function(result){
+                        alert(result);
+                        alert("Login! " + name);
+                        alert("{{ Session::get('username') }}");
+                    });
+             alert("addProfile function ended");
+             
+         }
+         $(document).ready(function(){
+             $("#testButton").click(addProfile);
+         });  
+        </script>
+        
+        <footer>
+            @yield('footer')
+        </footer>
     </body>
-    <footer>
-        @yield('footer')
-    </footer>
 </html>

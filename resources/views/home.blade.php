@@ -57,7 +57,7 @@
                     </ul>
                     
                     <div class="text-center">
-                        <button href="" class="btn" data-toggle="modal" data-target="#modalLoginForm">Login</button>
+                        <button href="" class="btn" data-toggle="modal" data-target="#modalLoginForm">Lokgin</button>
                     </div>
                     
                 </div>

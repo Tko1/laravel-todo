@@ -1,5 +1,6 @@
 <?php
 use App\Task;
+use App\Profile;
 use Illuminate\Http\Request;
 /*
    |--------------------------------------------------------------------------
@@ -40,4 +41,54 @@ Route::post('/task', function (Request $request) {
 
 Route::delete('/task/{id}', function($id){
     //
+});
+// TODO change all 'names' to be 'usernames' for consistency
+Route::post('/createProfile',function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|max:255'
+    ]);
+
+    if ($validator->fails()) {
+        return redirect('/')
+->withInput()
+->withErrors($validator);
+    }
+    /* 
+       Hmm ..  I'm repeating myself here,
+       there's got to be a way to automate this a bit
+     */
+    $profile = new Profile();
+    $profile->name = $request->name;
+    $profile->save();
+
+    return [ 'response' => 'success'];
+});
+
+
+Route::post('/login',function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|max:255'
+    ]);
+    
+    if ($validator->fails()) {
+        return redirect('/')
+            ->withInput()
+            ->withErrors($validator);
+    }
+    $response = [ 'response' => 'failure'];
+    $loginName = $request->name;
+
+    //Check to see if valid profile name
+    $profile = Profile::where('name', '=', $loginName)->first();
+    if ($profile === null) {
+        $response['response'] = 'failure';
+    }
+    else {
+        //We will be telling our caller it worked out, and the profile
+        //name
+        $response['response'] = 'success';
+        $response['username'] = $loginName;
+        $request->session()->put('username',$loginName);
+    }
+    return $response;
 });
