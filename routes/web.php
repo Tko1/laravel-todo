@@ -89,6 +89,7 @@ Route::post('/login',function (Request $request) {
             return $response;
         }
         $taskListId = $taskList->id;
+        $taskListName = $taskList->name;
         //We will be telling our caller it worked out, and the profile
         //name
         $response['response'] = 'success';
@@ -98,6 +99,7 @@ Route::post('/login',function (Request $request) {
         //Load this task list as the active taskList of this session
         $request->session()->put('taskListId',$taskListId);
         //Change task list name
+        $request->session()->put('taskListName',$taskListName);
     }
     return $response;
 });

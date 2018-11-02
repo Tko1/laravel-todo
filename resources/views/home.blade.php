@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="todolist not-done">
-                    <h1>My Day</h1>
+                    <h1>{{ Session::get("taskListName") ?: "No task list loaded" }}</h1>
                     <input type="text" id="add-task-input" class="form-control add-todo" placeholder="Add task">
                     <button id="add-task-button" class="btn">Submit</button>
                     
