@@ -26,7 +26,10 @@
                     function(result){
                         console.log(result);
                         console.log("Login! " + name);
-                    });
+                    }).fail(function(xhr, textStatus, errorThrown) {
+                        console.log(xhr);
+                        console.log(" | " + textStatus + " | " + errorThrown);
+                    });;
          }
          function addProfile() {
              let name = $('#username-input').val();
@@ -36,7 +39,10 @@
                         console.log(result);
                         console.log("create profile success! " + name);
                         console.log("{{ Session::get('username') }}");
-                    });
+                    }).fail(function(xhr, textStatus, errorThrown) {
+                        console.log(xhr);
+                        console.log(" | " + textStatus + " | " + errorThrown);
+                    });;
              loadProfile(name);
              alert("addProfile function ended");
              

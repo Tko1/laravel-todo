@@ -202,11 +202,11 @@
                     <hr>
                     <p> User profiles: </p>
                     
-                    <ul class="list-group user-profile-list">
+                    <div class="list-group user-profile-list">
                         @foreach($profiles as $profile)
-                            <li class="list-group-item load-profile-li">{{$profile}}</li>
+                            <a href="#" class="list-group-item load-profile-li lg-hover">{{$profile}}</a>
                         @endforeach
-                    </ul>
+                    </div>
                     <hr class="my-2">
                     <div class="text-center">
                         <button href="" class="btn" data-toggle="modal" data-target="#modalLoginForm">Add profile</button>
