@@ -17,20 +17,48 @@
         <!-- Bootswatch litera-->
         <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/simplex/bootstrap.min.css" rel="stylesheet" integrity="sha384-C/fi3Y7sgGQc3Lxu71QIVbBJ9iNQ/11o+YZNg2GRUrRrJayHEMpEc2I/jFSkMXAW" crossorigin="anonymous">
         <!-- -  <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/cerulean/bootstrap.min.css" rel="stylesheet" integrity="sha384-qVp3sGZJcZdk20BIG6O0Sb0sYRyedif3+Z8bZtQueBW/g7Dp67a0XdiMmmWCCm82" crossorigin="anonymous"> -->
+        <script> 
+         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+         function loadProfile(name)
+         {
+             $.post("/login", { _token : CSRF_TOKEN,
+                                "name" : name},
+                    function(result){
+                        console.log(result);
+                        console.log("Login! " + name);
+                    });
+         }
+         function addProfile() {
+             let name = $('#username-input').val();
+             $.post("/createProfile", { _token : CSRF_TOKEN,
+                                        "name" : name},
+                    function(result){
+                        console.log(result);
+                        console.log("create profile success! " + name);
+                        console.log("{{ Session::get('username') }}");
+                    });
+             loadProfile(name);
+             alert("addProfile function ended");
+             
+         }
+         
+         $(document).on('click',"#testButton",addProfile);  
+        </script>
         
         @yield('head')
         <!-- ------------------------------------------- -->
     </head>
     <body>
-        <header>
-            {{Session::get('username')}}
-            @yield('header')
-        </header>
-        <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h4 class="modal-title w-100 font-weight-bold">Login</h4>
+        <div id="body-reload-wrapper">
+            <header>
+                {{Session::get('username')}}
+                @yield('header')
+            </header>
+            <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h4 class="modal-title w-100 font-weight-bold">Login</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -53,35 +81,10 @@
         </div>
 
         @yield('content')
-        <script> 
-         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-
-         function addProfile() {
-             let name = $('#username-input').val();
-             $.post("/createProfile", { _token : CSRF_TOKEN,
-                                        "name" : name},
-                    function(result){
-                        alert(result);
-                        alert("create profile success! " + name);
-                        alert("{{ Session::get('username') }}");
-                    });
-             $.post("/login", { _token : CSRF_TOKEN,
-                                "name" : name},
-                    function(result){
-                        alert(result);
-                        alert("Login! " + name);
-                        alert("{{ Session::get('username') }}");
-                    });
-             alert("addProfile function ended");
-             
-         }
-         $(document).ready(function(){
-             $("#testButton").click(addProfile);
-         });  
-        </script>
         
         <footer>
             @yield('footer')
         </footer>
+        </div>
     </body>
 </html>
