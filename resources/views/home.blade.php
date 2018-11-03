@@ -194,7 +194,7 @@
                         <span>
                             <!--  Currently have this on one line due to small error with whitespace (will trim later)-->
                             <h3 class="user-meta"
-                                username="{{Session::get('username') ?: "Default"}}"
+                                username="{{Session::get('username') ?: "No profile loaded"}}"
                                 userId="{{Session::get('userId') ?: 0}}"
                                 taskListId="{{Session::get('taskListId')}}">{{ Session::get('username') ?: "No profile loaded" }}</h3>
                         </span>
@@ -219,7 +219,7 @@
 
 @section('footer')
     <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">{{Session::get("username")}}</a>
+        <a class="navbar-brand" href="#">{{Session::get("username") ?: "Add profile to use todo list!"}}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -230,18 +230,7 @@
                         <a class="nav-link taskList-nav-link" href="javascript:;" taskList-id="{{$taskList->id}}" >{{$taskList->name}} <span class="sr-only"></span></a>
                     </li>
                 @endforeach
-                x
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
-                <li class="nav-item dropup">
-                    <a class="nav-link dropdown-toggle" href="https://getbootstrap.com" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other tasklists..</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown10">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
+                
                 <li class="nav-item">
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default btn-number circle"  data-toggle="modal" data-target="#modalTaskListForm">

@@ -58,6 +58,7 @@ class ProfileController extends Controller
         if ($profile === null) {
             $response['response'] = 'failure';
         }
+        //If it is a valid profile...
         else {
             $loginId = $profile->id;
 
