@@ -14,10 +14,7 @@ class ProfileController extends Controller
         $this->validate($request, [
             'name' => 'required|max:255'
         ]);
-        /* 
-           Hmm ..  I'm repeating myself here,
-           there's got to be a way to automate this a bit
-         */
+        
         $profile = new Profile();
         $profile->name = $request->name;
         $profile->save();
