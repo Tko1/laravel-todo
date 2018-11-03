@@ -15,23 +15,40 @@ use Illuminate\Http\Request;
  */
 
 Route::get('/', function (Request $request) {
+    //Get our current user id
     $userId = $request->session()->get('userId');
+    //Get our current task list id
     $taskListId = $request->session()->get('taskListId');
-    //TODO get tasks one time,  then pull out completed?
+    /*
+       Get all the (incomplete) tasks that belong to this user
+       to show in the active task list window,and narrow them down
+       to tasks that should be a part of the active task list.
+       Note: may be better to just query for task list's tasks, since 
+       the task list belongs to the user and, transitively, 
+       the tasks would as well
+    */
     $tasks = Task::where('authorId', '=', $userId)
                  ->where('parentTaskListId', '=', $taskListId)
                  ->where('completed', '=', false)
                  ->orderBy('created_at', 'asc')->get();
-    
+    //Get all complete tasks for the completed tasks window
     $completedTasks = Task::where('authorId', '=', $userId)
                           ->where('parentTaskListId', '=', $taskListId)
                           ->where('completed', '=', true)
                           ->orderBy('created_at', 'asc')->get();
+    //Get a list of profile names for the profile view window
     $profiles = Profile::all()->pluck('name')->toArray();
+    
+    //Get a list of the tasks lists for the task list
+    //bar switcher at the bottom
+    $taskLists = TaskList::where('authorId', '=', $userId)
+                         ->orderBy('created_at', 'asc')->get();
+    //Pass all our information to our view
     return view('home', [
         'tasks' => $tasks,
         'completedTasks' => $completedTasks,
-        'profiles' => $profiles
+        'profiles' => $profiles,
+        'taskLists' => $taskLists
     ]);
 });
 
@@ -46,8 +63,8 @@ Route::post('/createProfile',function (Request $request) {
 
     if ($validator->fails()) {
         return redirect('/')
-->withInput()
-->withErrors($validator);
+               ->withInput()
+               ->withErrors($validator);
     }
     /* 
        Hmm ..  I'm repeating myself here,
@@ -58,18 +75,30 @@ Route::post('/createProfile',function (Request $request) {
     $profile->save();
 
     /*
-     * Create an empty taskList for our new profile
+     * Is this the best way to reuse this behavior? 
      */
+    app('App\Http\Controller\TaskListController')->store(
+        [
+            'authorId' => $profile->id,
+            'name'     => "Default Task List"
+        ]
+    );
+    /*
     $taskList = new TaskList();
     $taskList->authorId = $profile->id;
     $taskList->name = "Default Task List";
     $taskList->save();
+    */
     
     return [ 'response' => 'success', 'username' => $profile->name, 'userId' => $profile->id];
 });
 
 Route::post('/createTask', 'TaskController@store');
 Route::post('/completeTask', 'TaskController@complete');
+
+Route::post('/createTaskList', 'TaskListController@store');
+Route::post('/switchTaskList','TaskListController@fetch');
+
 Route::post('/login',function (Request $request) {
     $validator = Validator::make($request->all(), [
         'name' => 'required|max:255'

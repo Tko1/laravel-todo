@@ -33,6 +33,43 @@
          console.log("addTask function ended");
          
      }
+     function addTaskList(){
+         console.log("start: addTaskList");
+         let taskName = $('#add-tasklist-input').val();
+         let userId   = $('.user-meta')[0].getAttribute("userId");
+         console.log("Name: " +taskName+ " userId: " + userId);
+         $.post("/createTaskList", { _token : CSRF_TOKEN,
+                                     "name" : taskName,
+                                     "authorId" : userId},
+                function(result){
+                    console.log(result);
+                    console.log("create tasklist success! " + name);
+                    refreshHome();
+                }).fail(function(xhr, textStatus, errorThrown) {
+                    console.log(xhr);
+                    console.log(" | " + textStatus + " | " + errorThrown);
+                });
+         console.log("addTask function ended");
+         
+     }
+     function switchTaskList(){
+         console.log("start: switchTaskList");
+         let taskListId = $(this)[0].getAttribute("taskList-id");
+         console.log("taskListId " + taskListId);
+         console.log($(this)[0]);
+         $.post("/switchTaskList", { _token : CSRF_TOKEN,
+                                     "id" : taskListId},
+                function(result){
+                    console.log(result);
+                    console.log("switchTaskList success! ");
+                    refreshHome();
+                }).fail(function(xhr, textStatus, errorThrown) {
+                    console.log(xhr);
+                    console.log(" | " + textStatus + " | " + errorThrown);
+                });
+         console.log("switchTasklist function ended");
+         
+     }
      function completeChecked()
      {
          //task-list-item
@@ -73,9 +110,38 @@
                         console.log("name! " + name);
                         loadProfile(name);
                         refreshHome();
-                    });  
+                    });
+     $(document).on('click',"#new-taskList-button",addTaskList);
+     $(document).on('click',".taskList-nav-link",switchTaskList);
      
     </script>
+    <!--  Modal for creating task list------------------------------>
+    <div class="modal fade" id="modalTaskListForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">New Tasklist</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            
+                            <input type="username" id="add-tasklist-input" class="form-control validate" placeholder="Username">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn btn-default" id="new-taskList-button">
+                            Add Tasklist
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- ------------------------------------------------------- -->
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -94,13 +160,6 @@
                                 </div>
                             </li>
                         @endforeach
-                        <!-- Example todo -->
-                        <li class="list-group-item">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" value="" /> Take out the trash</label> <br><font color="grey"> Go to dumpster, place trash inside dumpster, do dance, shout 'yatta' from the skies, I dunno, I'm just trying to make a large description and I don't speak Lorem Ipsem. </font><i class='fa fa-plus'></i>
-                            </div>
-                        </li>
                         
                     </ul>
                     <hr>
@@ -166,12 +225,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">My Day <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Game project #1</a>
-                </li>
+                @foreach($taskLists as $taskList)
+                    <li class="nav-item active">
+                        <a class="nav-link taskList-nav-link" href="javascript:;" taskList-id="{{$taskList->id}}" >{{$taskList->name}} <span class="sr-only"></span></a>
+                    </li>
+                @endforeach
+                x
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#">Disabled</a>
                 </li>
@@ -185,7 +244,7 @@
                 </li>
                 <li class="nav-item">
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-default btn-number circle" data-type="plus" data-field="quant[1]">
+                        <button type="button" class="btn btn-default btn-number circle"  data-toggle="modal" data-target="#modalTaskListForm">
                             <i class='fa fa-plus'></i>
                         </button>
                     </span>
